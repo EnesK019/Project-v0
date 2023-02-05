@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Core.CrossCuttingConcerns.Validation
@@ -15,7 +14,7 @@ namespace Core.CrossCuttingConcerns.Validation
             var result = validator.Validate(context);
             if (!result.IsValid)
             {
-                throw new FluentValidation.ValidationException(result.Errors);
+                throw new ValidationException(result.Errors);
             }
         }
     }
