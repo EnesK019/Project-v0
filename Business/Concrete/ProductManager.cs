@@ -29,12 +29,12 @@ namespace Business.Concrete
             _categoryService = categoryService;
         }
 
-        //[ValidationAspect(typeof(ProductValidator))]
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
-
-           IResult result =  BusinessRules.Run(CheckIfProductOfCategoryCorect(product.CategoryId),
-                          CheckIfProductNameExist(product.ProductName), CheckIfCategoryLimitExceded());
+            IResult result = BusinessRules.Run(CheckIfProductNameExist(product.ProductName),
+                                               CheckIfProductCountOfCategoryCorrect(product.CategoryId),
+                                               CheckIfCategoryLimitExceded());
 
             if(result != null)
             {
@@ -44,6 +44,7 @@ namespace Business.Concrete
             _productDal.Add(product);
 
             return new SuccessResult(Messages.ProductAdded);
+
         }
 
         public IDataResult<List<Product>> GetAll()
@@ -84,7 +85,7 @@ namespace Business.Concrete
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Update(Product product)
         {
-            if (CheckIfProductOfCategoryCorect(product.CategoryId).Success)
+            if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
             {
                 _productDal.Update(product);
 
@@ -93,7 +94,7 @@ namespace Business.Concrete
             return new ErrorResult();
         }
 
-        private IResult CheckIfProductOfCategoryCorect(int categoryId)
+        private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
         {
             var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
             if (result >= 10)
@@ -120,7 +121,7 @@ namespace Business.Concrete
             {
                 return new ErrorResult(Messages.CategoryLimitExceded);
             }
-            return new SuccessResult();
+            return new SuccessResult();  
         }
     }
 }
