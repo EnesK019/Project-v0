@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Core.Utilities.Security.JWT
 {
-    internal class AccessToken
+    public class AccessToken
     {
+        public string Token { get; set; }
+        public DateTime Expiration { get; set; }
     }
 }
